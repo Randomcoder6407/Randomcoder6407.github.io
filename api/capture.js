@@ -1,4 +1,3 @@
-```javascript
 export default function handler(req, res) {
     // Add CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
