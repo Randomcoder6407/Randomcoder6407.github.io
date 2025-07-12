@@ -11,8 +11,23 @@ module.exports = function handler(req, res) {
     
     if (req.method === 'GET') {
         const cookies = req.query.cookies;
-        console.log('Received cookies:', cookies);
-        res.status(200).json({ message: 'Cookies received!', cookies: cookies });
+        const data = req.query.data;
+        
+        if (data) {
+            console.log('Received all data:', data);
+            try {
+                const parsedData = JSON.parse(data);
+                console.log('Parsed data:', parsedData);
+            } catch (e) {
+                console.log('Raw data:', data);
+            }
+        }
+        
+        if (cookies) {
+            console.log('Received cookies:', cookies);
+        }
+        
+        res.status(200).json({ message: 'Data received!' });
     } else if (req.method === 'POST') {
         console.log('Received data:', req.body);
         res.status(200).json({ message: 'Data received successfully!' });
