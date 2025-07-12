@@ -1,12 +1,18 @@
 export default function handler(req, res) {
+    // Add CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+    
     if (req.method === 'POST') {
-        // Log incoming data to the console or store it
         console.log('Received data:', req.body);
-
-        // Respond with a success message
         res.status(200).json({ message: 'Data received successfully!' });
     } else {
-        // Respond if method is not POST
         res.status(405).json({ message: 'Only POST requests are allowed' });
     }
 }
