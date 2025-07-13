@@ -1,25 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
-  <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
-  <title>Exfiltration</title>
-</head>
-<body>
-  <iframe id="fencedFrame" src="fenced-frame.html" sandbox="allow-scripts allow-same-origin" style="width: 100%; height: 100%; border: none;"></iframe>
-
-  <script>
-    // Wait for the iframe to load and set up the necessary communication
-    window.onload = () => {
-      const iframe = document.getElementById('fencedFrame');
-      iframe.onload = () => {
-        const iframeWindow = iframe.contentWindow;
-        
-        iframeWindow.postMessage("start", "*"); // Trigger action inside iframe
-      };
+<script>
+  window.onload = () => {
+    const iframe = document.getElementById('fencedFrame');
+    iframe.onload = () => {
+      const iframeWindow = iframe.contentWindow;
+      console.log("Sending start message to iframe");
+      iframeWindow.postMessage("start", "*"); // Send the start message
     };
-  </script>
-</body>
-</html>
+  };
+</script>
