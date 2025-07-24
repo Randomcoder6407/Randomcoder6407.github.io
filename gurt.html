@@ -1,5 +1,5 @@
 <script>
-fetch('/notes')
+fetch('http://saturn.picoctf.net:56859/notes')
   .then(r=>r.text())
   .then(txt=>{
     // Find flag in notes HTML (e.g., ctf{...})
